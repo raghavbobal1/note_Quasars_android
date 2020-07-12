@@ -6,72 +6,55 @@ import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-@Entity
+@Entity(tableName = "notes")
 public class Note {
 
     @PrimaryKey(autoGenerate = true)
-    private int note_id;
+    private int id;
 
-    @ColumnInfo(name = "note_content") // column name will be "note_content" instead of "content" in table
-    private String content;
-
+    @ColumnInfo(name = "title")
     private String title;
 
-    public Note(int note_id, String content, String title) {
-        this.note_id = note_id;
-        this.content = content;
+    @ColumnInfo(name = "note")
+    private String note;
+
+    public Note(){
+
+    }
+
+    public Note(int id,String title,String note){
+        this.id = id;
         this.title = title;
+        this.note = note;
     }
 
-    public int getNote_id() {
-        return note_id;
+    public Note(String title,String note){
+        this.title = title;
+        this.note = note;
     }
 
-    public void setNote_id(int note_id) {
-        this.note_id = note_id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Note)) return false;
-
-        Note note = (Note) o;
-
-        if (note_id != note.note_id) return false;
-        return Objects.equals(title, note.title);
-    }
-
-
-    @Override
-    public int hashCode() {
-        int result = note_id;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Note{" +
-                "note_id=" + note_id +
-                ", content='" + content + '\'' +
-                ", title='" + title + '\'' +
-                '}';
+    public void setNote(String note) {
+        this.note = note;
     }
 }
