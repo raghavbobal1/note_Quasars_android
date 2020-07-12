@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.aby.note_quasars_android.database.DatabaseHandler;
+import com.aby.note_quasars_android.database.LocalCacheManager;
+import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.model.Note;
 import com.aby.note_quasars_android.R;
 
@@ -19,7 +21,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface {
 
     @BindView(R.id.etTitle)
     EditText etTitle;
@@ -27,22 +29,12 @@ public class AddNoteActivity extends AppCompatActivity {
     @BindView(R.id.etNote)
     EditText etNote;
 
-    @BindView(R.id.btnSave)
-    Button btnSave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
         ButterKnife.bind(this);
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveNote();
-            }
-        });
     }
-
 
     private void saveNote(){
 
@@ -51,19 +43,13 @@ public class AddNoteActivity extends AppCompatActivity {
 
         if(title.equals("") || note_text.equals("")){
             showToast("Please fill all the fields before saving");
-        }else{
-            DatabaseHandler db = new DatabaseHandler(this);
-            Note note = new Note(title,note_text);
-            db.addNote(note);
-            db.close();
-
-            Intent i = new Intent(AddNoteActivity.this, MainActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(i);
-
+        }else
+        {
+            //Call Method to add note
+            LocalCacheManager.getInstance(this).addNotes(this, title,note_text);
         }
-
     }
+
 
     private void showToast(String msg){
         Toast.makeText(this,msg,Toast.LENGTH_SHORT);
@@ -84,5 +70,19 @@ public class AddNoteActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onNoteAdded() {
+        Toast.makeText(this,"Note Added",Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(AddNoteActivity.this,MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+        Toast.makeText(this,"Could not add note",Toast.LENGTH_SHORT).show();
     }
 }
