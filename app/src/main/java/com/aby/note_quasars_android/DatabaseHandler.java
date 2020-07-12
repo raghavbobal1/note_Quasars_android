@@ -18,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "notes_manager";
     private static final String TABLE_NAME = "notes";
 
-    // Coloumn Names
+    // Column Names
     private static final String KEY_ID = "id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_NOTE = "note";
