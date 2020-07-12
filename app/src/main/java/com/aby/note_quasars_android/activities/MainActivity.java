@@ -2,8 +2,11 @@ package com.aby.note_quasars_android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.aby.note_quasars_android.database.DatabaseHandler;
+import com.aby.note_quasars_android.database.LocalCacheManager;
+import com.aby.note_quasars_android.interfaces.MainViewInterface;
 import com.aby.note_quasars_android.model.Note;
 import com.aby.note_quasars_android.adapters.NotesAdapter;
 import com.aby.note_quasars_android.R;
@@ -18,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainViewInterface {
 
     @BindView(R.id.rvNotes)
     RecyclerView rvNotes;
@@ -43,21 +46,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadNotes(){
-        DatabaseHandler db = new DatabaseHandler(this);
 
-        notesList = db.getAllNotes();
-        if(notesList.size() != 0){
-            adapter = new NotesAdapter(this,notesList);
-            rvNotes.setAdapter(adapter);
-        }
+        //Call Method to get Notes
+        LocalCacheManager.getInstance(this).getNotes(this);
 
 
     }
 
     @OnClick(R.id.fabAddNote)
     public void addNote(){
-        Intent i = new Intent(MainActivity.this, AddNoteActivity.class);
+        Intent i = new Intent(MainActivity.this,AddNoteActivity.class);
         startActivity(i);
     }
 
+    @Override
+    public void onNotesLoaded(List<Note> notes) {
+        notesList = notes;
+
+        if(notesList.size() == 0){
+            onDataNotAvailable();
+        }else {
+            adapter = new NotesAdapter(this, notes);
+            rvNotes.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void onNoteAdded() {
+        Toast.makeText(this,"Note Added", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+        Toast.makeText(this,"No Notes Yet",Toast.LENGTH_SHORT).show();
+    }
 }
