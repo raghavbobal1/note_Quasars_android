@@ -1,13 +1,13 @@
-package com.aby.note_quasars_android;
+package com.aby.note_quasars_android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.aby.note_quasars_android.database.DatabaseHandler;
+import com.aby.note_quasars_android.model.Note;
+import com.aby.note_quasars_android.R;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,7 +57,7 @@ public class AddNoteActivity extends AppCompatActivity {
             db.addNote(note);
             db.close();
 
-            Intent i = new Intent(AddNoteActivity.this,MainActivity.class);
+            Intent i = new Intent(AddNoteActivity.this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
 

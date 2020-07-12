@@ -1,15 +1,10 @@
-package com.aby.note_quasars_android;
-
-import android.provider.SyncStateContract;
+package com.aby.note_quasars_android.model;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.Update;
 
 import java.util.List;
-import com.aby.note_quasars_android.Note;
 
 import io.reactivex.Maybe;
 

@@ -1,20 +1,16 @@
-package com.aby.note_quasars_android;
+package com.aby.note_quasars_android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.aby.note_quasars_android.database.DatabaseHandler;
+import com.aby.note_quasars_android.model.Note;
+import com.aby.note_quasars_android.adapters.NotesAdapter;
+import com.aby.note_quasars_android.R;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.View;
-
-import android.view.Menu;
-import android.view.MenuItem;
 
 import java.util.List;
 
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fabAddNote)
     public void addNote(){
-        Intent i = new Intent(MainActivity.this,AddNoteActivity.class);
+        Intent i = new Intent(MainActivity.this, AddNoteActivity.class);
         startActivity(i);
     }
 
