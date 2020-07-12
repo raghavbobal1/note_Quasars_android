@@ -29,11 +29,21 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     @BindView(R.id.etNote)
     EditText etNote;
 
+    @BindView(R.id.btnSave)
+    Button btnSave;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
         ButterKnife.bind(this);
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveNote();
+            }
+        });
     }
 
     private void saveNote(){
