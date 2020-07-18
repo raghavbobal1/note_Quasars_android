@@ -1,4 +1,4 @@
-package com.aby.note_quasars_android.model;
+package com.aby.note_quasars_android.database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
