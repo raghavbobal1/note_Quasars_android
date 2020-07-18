@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     @BindView(R.id.rvNotes)
     RecyclerView rvNotes;
 
-    RecyclerView.Adapter adapter;
+    NotesAdapter adapter;
     List<Note> notesList;
 
     @Override
@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
         initViews();
         loadNotes();
+
+
 
     }
 
@@ -66,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
             onDataNotAvailable();
         }else {
             adapter = new NotesAdapter(this, notes);
+            adapter.setOnItemClickListner(new NotesAdapter.OnItemClickListner() {
+                @Override
+                public void onItemClick(Note contact) {
+                    Intent intent = new Intent(MainActivity.this,AddNoteActivity.class);
+                    startActivity(intent);
+                }
+            });
             rvNotes.setAdapter(adapter);
         }
     }

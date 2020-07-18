@@ -33,12 +33,16 @@ public class LocalCacheManager {
     }
 
     public void getNotes(final MainViewInterface mainViewInterface) {
-        db.noteDao().getAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Note>>() {
-            @Override
-            public void accept(List<Note> notes) throws Exception {
-                mainViewInterface.onNotesLoaded(notes);
-            }
-        });
+        db.noteDao()
+                .getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Note>>() {
+                        @Override
+                        public void accept(List<Note> notes) throws Exception {
+                            mainViewInterface.onNotesLoaded(notes);
+                        }
+                    });
     }
 
     public void addNotes(final AddNoteViewInterface addNoteViewInterface, final String title, final String note_text) {

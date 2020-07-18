@@ -18,6 +18,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     Context context;
     List<Note> noteList = new ArrayList<>();
+    private OnItemClickListner listner;
+
 
     public NotesAdapter(Context context, List<Note> noteList) {
         this.context = context;
@@ -51,7 +53,27 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             tvTitle = itemView.findViewById(R.id.tvNoteTitle);
             tvNote = itemView.findViewById(R.id.tvNoteText);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position  =  getAdapterPosition();
+
+                    if(listner != null && position != RecyclerView.NO_POSITION){
+                        listner.onItemClick(noteList.get(position));
+                    }
+
+                }
+            });
+
         }
+    }
+
+    public  interface  OnItemClickListner {
+        void onItemClick(Note contact);
+    }
+
+    public void setOnItemClickListner(OnItemClickListner onItemClickListner){
+        this.listner = onItemClickListner;
     }
 
 }
