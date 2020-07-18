@@ -6,9 +6,6 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.aby.note_quasars_android.model.Note;
-import com.aby.note_quasars_android.interfaces.NoteDao;
-
 @Database(entities = {Note.class},version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 

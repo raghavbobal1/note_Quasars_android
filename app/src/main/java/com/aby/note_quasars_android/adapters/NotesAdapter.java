@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aby.note_quasars_android.model.Note;
+import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.R;
 
 import java.util.ArrayList;

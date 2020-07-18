@@ -1,6 +1,6 @@
 package com.aby.note_quasars_android.interfaces;
 
-import com.aby.note_quasars_android.model.Note;
+import com.aby.note_quasars_android.database.Note;
 
 import java.util.List;
 

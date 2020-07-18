@@ -1,10 +1,8 @@
-package com.aby.note_quasars_android.interfaces;
+package com.aby.note_quasars_android.database;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-
-import com.aby.note_quasars_android.model.Note;
 
 import java.util.List;
 

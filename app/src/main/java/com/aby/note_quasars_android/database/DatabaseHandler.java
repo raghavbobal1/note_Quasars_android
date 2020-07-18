@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.aby.note_quasars_android.model.Note;
-
 import java.util.ArrayList;
 import java.util.List;
 

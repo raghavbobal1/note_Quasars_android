@@ -4,10 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.aby.note_quasars_android.database.DatabaseHandler;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.interfaces.MainViewInterface;
-import com.aby.note_quasars_android.model.Note;
+import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.adapters.NotesAdapter;
 import com.aby.note_quasars_android.R;
 

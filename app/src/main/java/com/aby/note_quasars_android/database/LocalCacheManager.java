@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.interfaces.MainViewInterface;
-import com.aby.note_quasars_android.model.Note;
 
 import java.util.List;
 
