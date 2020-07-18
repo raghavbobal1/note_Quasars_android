@@ -12,6 +12,7 @@ import com.aby.note_quasars_android.R;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +41,8 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         setContentView(R.layout.activity_add_note);
         ButterKnife.bind(this);
 
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
+
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +50,8 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
             }
         });
     }
+
+
 
     private void saveNote(){
 
@@ -58,7 +63,8 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         }else
         {
             //Call Method to add note
-            LocalCacheManager.getInstance(this).addNotes(this, title,note_text);
+            LocalCacheManager.getInstance(this)
+                    .addNotes(this, title,note_text);
         }
     }
 
@@ -77,7 +83,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if(id == R.id.action_save){
+        if(id == R.id.save_note){
             saveNote();
         }
 

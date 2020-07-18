@@ -37,8 +37,12 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         initViews();
         loadNotes();
 
+    }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNotes();
     }
 
     private void initViews() {
