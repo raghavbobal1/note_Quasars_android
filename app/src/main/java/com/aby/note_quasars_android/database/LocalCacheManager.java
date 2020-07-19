@@ -1,8 +1,10 @@
 package com.aby.note_quasars_android.database;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
+import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 import com.aby.note_quasars_android.interfaces.MainViewInterface;
 
 import java.util.List;
@@ -67,6 +69,32 @@ public class LocalCacheManager {
             public void onError(Throwable e) {
                 addNoteViewInterface.onDataNotAvailable();
             }
+        });
+    }
+
+
+    public void updateNote(final EditNoteViewInterface editNoteViewInterface, Note note) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+
+                db.noteDao().update(note);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onComplete() {
+                editNoteViewInterface.onNoteUpdated();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("ERROR", "onError: " + e);
+        }
         });
     }
 

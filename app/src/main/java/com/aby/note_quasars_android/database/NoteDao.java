@@ -3,6 +3,7 @@ package com.aby.note_quasars_android.database;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -16,5 +17,8 @@ public interface NoteDao {
 
     @Insert
     void insertAll(Note... notes);
+
+    @Update
+    void update(Note note);
 
 }

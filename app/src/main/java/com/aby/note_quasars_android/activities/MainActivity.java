@@ -22,6 +22,7 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements MainViewInterface {
 
+    private String NOTE_OBJECT_NAME = "NoteOBJECT";
     @BindView(R.id.rvNotes)
     RecyclerView rvNotes;
 
@@ -74,8 +75,9 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
             adapter = new NotesAdapter(this, notes);
             adapter.setOnItemClickListner(new NotesAdapter.OnItemClickListner() {
                 @Override
-                public void onItemClick(Note contact) {
-                    Intent intent = new Intent(MainActivity.this,AddNoteActivity.class);
+                public void onItemClick(Note note) {
+                    Intent intent = new Intent(MainActivity.this,EditableDetailViewActivity.class);
+                    intent.putExtra(NOTE_OBJECT_NAME,note);
                     startActivity(intent);
                 }
             });

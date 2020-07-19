@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.R;
+import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +25,8 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface {
+public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface, EditNoteViewInterface {
+
 
     @BindView(R.id.etTitle)
     EditText etTitle;
@@ -42,6 +44,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         ButterKnife.bind(this);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
+
+
+
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,5 +137,14 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
                 imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
             }
         }
+    }
+
+    @Override
+    public void onNoteUpdated() {
+        Toast.makeText(this,"Note Updated",Toast.LENGTH_SHORT).show();
+
+        Intent i = new Intent(AddNoteActivity.this,MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
     }
 }
