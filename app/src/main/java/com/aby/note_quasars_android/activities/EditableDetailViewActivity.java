@@ -1,6 +1,7 @@
 package com.aby.note_quasars_android.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +19,9 @@ import butterknife.ButterKnife;
 public class EditableDetailViewActivity extends AppCompatActivity {
 
     private String NOTE_OBJECT_NAME = "NoteOBJECT";
+    private Menu menu;
+
+    private boolean isEditMode = false;
 
     @BindView(R.id.tvNoteTitleDetail)
     EditText tvNoteTitleDetail;
@@ -29,10 +33,10 @@ public class EditableDetailViewActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // setup all views
-        setupViewsForDetail();
+        initialSetupViewsForDetail();
     }
 
-    private void setupViewsForDetail(){
+    private void initialSetupViewsForDetail(){
 
         Intent intent = getIntent();
         if(intent.getSerializableExtra(NOTE_OBJECT_NAME) != null){
@@ -46,9 +50,12 @@ public class EditableDetailViewActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail_note,menu);
+        this.menu = menu;
         return true;
     }
 
@@ -56,8 +63,13 @@ public class EditableDetailViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if(id == R.id.edit_note){
+        if(id == R.id.edit_note && !isEditMode){
             setupForEdit();
+        }
+        else{
+            setupForDetail();
+
+            // save to database here
         }
 
         return super.onOptionsItemSelected(item);
@@ -65,5 +77,26 @@ public class EditableDetailViewActivity extends AppCompatActivity {
 
     private void setupForEdit(){
         tvNoteTitleDetail.setEnabled(true);
+        isEditMode = true;
+
+        MenuItem editSaveItem = menu.findItem(R.id.edit_note);
+        // set your desired icon here based on a flag if you like
+        editSaveItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_baseline_save_24
+        ));
+
+
+    }
+
+
+
+    private void setupForDetail(){
+        tvNoteTitleDetail.setEnabled(false);
+        isEditMode = false;
+        // change menu icon back to edit
+        MenuItem editSaveItem = menu.findItem(R.id.edit_note);
+        // set your desired icon here based on a flag if you like
+        editSaveItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_baseline_edit_24
+        ));
+
     }
 }
