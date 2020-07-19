@@ -3,6 +3,9 @@ package com.aby.note_quasars_android.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.aby.note_quasars_android.database.Folder;
@@ -13,7 +16,10 @@ import com.aby.note_quasars_android.R;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +28,13 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,11 +48,15 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     @BindView(R.id.etNote)
     EditText etNote;
 
-    @BindView(R.id.btnSave)
-    Button btnSave;
+    @BindView(R.id.imageView1)
+    ImageView imageView1;
 
-
+    File photoFile;
     Folder folder;
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String currentPhotoPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +69,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
         folder = (Folder) getIntent().getSerializableExtra(FolderListerActivity.FOLDER_OBJ_NAME);
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveNote();
-            }
-        });
     }
 
 
@@ -96,6 +106,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         int id = item.getItemId();
         if(id == R.id.save_note){
             saveNote();
+        }
+        else if(id == R.id.take_photo){
+            dispatchTakePictureIntent();
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,4 +158,72 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     }
 
 
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                System.out.println(ex);
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.aby.note_quasars_android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
+    }
+
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Uri photoURI = FileProvider.getUriForFile(this,
+                "com.aby.note_quasars_android.fileprovider",
+                photoFile);
+        System.out.println(photoURI);
+
+        imageView1.setImageURI(photoURI);
+    }
 }
