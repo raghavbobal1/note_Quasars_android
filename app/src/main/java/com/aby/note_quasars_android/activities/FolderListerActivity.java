@@ -3,6 +3,7 @@ package com.aby.note_quasars_android.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,7 +55,7 @@ public class FolderListerActivity extends AppCompatActivity implements FolderLis
 
     private void initViews() {
 
-        rvFolders.setLayoutManager(new LinearLayoutManager(this));
+        rvFolders.setLayoutManager(new GridLayoutManager(this,2));
     }
 
     private void loadFolders(){
