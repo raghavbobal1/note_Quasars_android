@@ -25,7 +25,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface, EditNoteViewInterface {
+public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface {
 
 
     @BindView(R.id.etTitle)
@@ -139,12 +139,5 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         }
     }
 
-    @Override
-    public void onNoteUpdated() {
-        Toast.makeText(this,"Note Updated",Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(AddNoteActivity.this,MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-    }
 }
