@@ -7,6 +7,11 @@
     android:background="#fff"
     tools:context=".activities.MainActivity">
 
+
+
+
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddNote"
         android:layout_width="wrap_content"

@@ -1,6 +1,7 @@
 package com.aby.note_quasars_android.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.transition.Fade;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
 
         initViews();
         loadNotes();
