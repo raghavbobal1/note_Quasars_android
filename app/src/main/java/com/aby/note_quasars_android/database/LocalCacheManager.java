@@ -63,11 +63,10 @@ public class LocalCacheManager {
 
 
 
-    public void addNotes(final AddNoteViewInterface addNoteViewInterface, final String title, final String note_text) {
+    public void addNotes(final AddNoteViewInterface addNoteViewInterface, Note note) {
         Completable.fromAction(new Action() {
             @Override
             public void run() throws Exception {
-                Note note = new Note(title, note_text);
                 db.noteDao().insertAll(note);
             }
         }).observeOn(AndroidSchedulers.mainThread())

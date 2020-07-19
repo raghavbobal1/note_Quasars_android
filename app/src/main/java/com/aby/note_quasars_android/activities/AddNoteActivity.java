@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.aby.note_quasars_android.database.Folder;
 import com.aby.note_quasars_android.database.LocalCacheManager;
+import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.R;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
@@ -37,6 +39,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     @BindView(R.id.btnSave)
     Button btnSave;
 
+
+    Folder folder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +51,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
 
 
-
+        folder = (Folder) getIntent().getSerializableExtra(FolderListerActivity.FOLDER_OBJ_NAME);
 
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +73,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         }else
         {
             //Call Method to add note
+            Note note = new Note(title,note_text, folder.getId());
             LocalCacheManager.getInstance(this)
-                    .addNotes(this, title,note_text);
+                    .addNotes(this, note);
         }
     }
 
@@ -99,9 +105,8 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     public void onNoteAdded() {
         Toast.makeText(this,"Note Added",Toast.LENGTH_SHORT).show();
 
-        Intent i = new Intent(AddNoteActivity.this,MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        finish();
+
     }
 
     @Override

@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     @OnClick(R.id.fabAddNote)
     public void addNote(){
         Intent i = new Intent(MainActivity.this,AddNoteActivity.class);
+        i.putExtra(FolderListerActivity.FOLDER_OBJ_NAME, folder);
         startActivity(i);
     }
 
