@@ -1,13 +1,19 @@
 package com.aby.note_quasars_android.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
-@Entity(tableName = "notes")
+import static androidx.room.ForeignKey.CASCADE;
+
+@Entity(tableName = "notes", foreignKeys = @ForeignKey(entity = Folder.class,parentColumns = "id", childColumns = "parentFolder", onDelete = CASCADE))
 public class Note implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
@@ -19,19 +25,39 @@ public class Note implements Serializable {
     @ColumnInfo(name = "note")
     private String note;
 
+
+    @ColumnInfo(name = "created_on")
+    private Date createdOn;
+
+
+    private int parentFolder;
+
     public Note(){
 
     }
 
-    public Note(int id,String title,String note){
+    public Note(int id,String title,String note, int parentFolder){
         this.id = id;
         this.title = title;
         this.note = note;
+        this.createdOn = new Date();
+        this.parentFolder = parentFolder;
+    }
+
+    public Note(String title,String note, int parentFolder){
+        this.title = title;
+        this.note = note;
+        this.createdOn = new Date();
+        this.parentFolder = parentFolder;
+
     }
 
     public Note(String title,String note){
         this.title = title;
         this.note = note;
+        this.createdOn = new Date();
+        this.parentFolder = 1;
+
     }
 
     public int getId() {
@@ -57,5 +83,21 @@ public class Note implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public int getParentFolder() {
+        return parentFolder;
+    }
+
+    public void setParentFolder(int parentFolder) {
+        this.parentFolder = parentFolder;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 }

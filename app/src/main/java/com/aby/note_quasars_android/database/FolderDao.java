@@ -11,18 +11,18 @@ import java.util.List;
 import io.reactivex.Maybe;
 
 @Dao
-public interface NoteDao {
+public interface FolderDao {
 
-    @Query("SELECT * FROM notes")
-    Maybe<List<Note>> getAll();
+    @Query("SELECT * FROM folder")
+    Maybe<List<Folder>> getAll();
 
     @Insert
-    void insertAll(Note... notes);
+    void insertAll(Folder... folders);
 
     @Update
-    void update(Note note);
+    void update(Folder folder);
 
     @Delete
-    void delete(Note note);
+    void delete(Folder folder);
 
 }

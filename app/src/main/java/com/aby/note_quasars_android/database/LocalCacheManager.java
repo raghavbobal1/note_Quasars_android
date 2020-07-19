@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
+import com.aby.note_quasars_android.interfaces.FolderListerInterface;
 import com.aby.note_quasars_android.interfaces.MainViewInterface;
 
 import java.util.List;
@@ -67,6 +68,7 @@ public class LocalCacheManager {
 
             @Override
             public void onError(Throwable e) {
+                Log.d("ERROR", "onError: " + e);
                 addNoteViewInterface.onDataNotAvailable();
             }
         });
@@ -95,6 +97,48 @@ public class LocalCacheManager {
             public void onError(Throwable e) {
                 Log.d("ERROR", "onError: " + e);
         }
+        });
+    }
+
+
+    // For folders
+
+    public void getFolders(final FolderListerInterface folderListerInterface) {
+        db.folderDao()
+                .getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Folder>>() {
+                    @Override
+                    public void accept(List<Folder> folders) throws Exception {
+                        folderListerInterface.onFoldersLoaded(folders);
+                    }
+                });
+    }
+
+
+    public void addFolders(final FolderListerInterface folderListerInterface, final String folderName) {
+        Completable.fromAction(new Action() {
+            @Override
+            public void run() throws Exception {
+                Folder folder = new Folder(folderName);
+                db.folderDao().insertAll(folder);
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()).subscribe(new CompletableObserver() {
+            @Override
+            public void onSubscribe(Disposable d) {
+            }
+
+            @Override
+            public void onComplete() {
+                folderListerInterface.onFolderAdded();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                folderListerInterface.onDataNotAvailable();
+            }
         });
     }
 
