@@ -30,6 +30,9 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
     @BindView(R.id.tvNoteTitleDetail)
     EditText tvNoteTitleDetail;
 
+    @BindView(R.id.tvNoteCreatedOnDetail)
+    TextView tvNoteCreatedOnDetail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,8 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
             tvNoteTitleDetail.setText(note.getTitle());
             tvNoteTitleDetail.setEnabled(false);
             tvNoteTitleDetail.setBackground(null);
+
+            tvNoteCreatedOnDetail.setText(note.getCreatedOn().toString());
         }
 
     }
