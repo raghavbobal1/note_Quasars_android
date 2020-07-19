@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aby.note_quasars_android.database.Note;
@@ -37,6 +38,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     public void onBindViewHolder(NotesViewHolder holder, int position) {
         holder.tvTitle.setText(noteList.get(position).getTitle());
         holder.tvNote.setText(noteList.get(position).getNote());
+        ViewCompat.setTransitionName(holder.tvTitle, Integer.toString(noteList.get(position).getId()));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                     int position  =  getAdapterPosition();
 
                     if(listner != null && position != RecyclerView.NO_POSITION){
-                        listner.onItemClick(noteList.get(position));
+                        listner.onItemClick(noteList.get(position),tvTitle);
                     }
 
                 }
@@ -69,7 +71,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     public  interface  OnItemClickListner {
-        void onItemClick(Note contact);
+        void onItemClick(Note contact, View view);
     }
 
     public void setOnItemClickListner(OnItemClickListner onItemClickListner){

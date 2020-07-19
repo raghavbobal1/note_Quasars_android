@@ -2,6 +2,8 @@ package com.aby.note_quasars_android.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aby.note_quasars_android.database.LocalCacheManager;
@@ -11,14 +13,19 @@ import com.aby.note_quasars_android.adapters.NotesAdapter;
 import com.aby.note_quasars_android.R;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static androidx.core.view.ViewCompat.*;
 
 public class MainActivity extends AppCompatActivity implements MainViewInterface {
 
@@ -75,10 +82,18 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
             adapter = new NotesAdapter(this, notes);
             adapter.setOnItemClickListner(new NotesAdapter.OnItemClickListner() {
                 @Override
-                public void onItemClick(Note note) {
+                public void onItemClick(Note note, View view) {
                     Intent intent = new Intent(MainActivity.this,EditableDetailViewActivity.class);
                     intent.putExtra(NOTE_OBJECT_NAME,note);
-                    startActivity(intent);
+                    intent.putExtra("transition_name", getTransitionName(view));
+
+                    ActivityOptionsCompat options;
+                    options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            MainActivity.this,
+                            view,
+                            Objects.requireNonNull(getTransitionName(view)));
+
+                    startActivity(intent, options.toBundle());
                 }
             });
             rvNotes.setAdapter(adapter);
