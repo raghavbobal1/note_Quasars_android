@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aby.note_quasars_android.database.Folder;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.interfaces.MainViewInterface;
 import com.aby.note_quasars_android.database.Note;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     private String NOTE_OBJECT_NAME = "NoteOBJECT";
     @BindView(R.id.rvNotes)
     RecyclerView rvNotes;
+    Folder folder;
 
     NotesAdapter adapter;
     List<Note> notesList;
@@ -58,13 +60,15 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     private void initViews() {
 
+        Intent intent = getIntent();
+        folder = (Folder) intent.getSerializableExtra(FolderListerActivity.FOLDER_OBJ_NAME);
         rvNotes.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void loadNotes(){
 
         //Call Method to get Notes
-        LocalCacheManager.getInstance(this).getNotes(this);
+        LocalCacheManager.getInstance(this).getNotesInFolder(this, folder.getId());
 
 
     }
@@ -110,6 +114,5 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
 
     @Override
     public void onDataNotAvailable() {
-        Toast.makeText(this,"No Notes Yet",Toast.LENGTH_SHORT).show();
     }
 }

@@ -34,7 +34,7 @@ import static androidx.core.view.ViewCompat.getTransitionName;
 public class FolderListerActivity extends AppCompatActivity implements FolderListerInterface {
 
 
-    final String FOLDER_OBJ_NAME = "folderObj";
+    final static String FOLDER_OBJ_NAME = "folderObj";
     @BindView(R.id.rvFolders)
     RecyclerView rvFolders;
 

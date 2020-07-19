@@ -16,6 +16,11 @@ public interface NoteDao {
     @Query("SELECT * FROM notes")
     Maybe<List<Note>> getAll();
 
+
+    @Query("SELECT * FROM notes where parentFolder = :folderId")
+    Maybe<List<Note>> getNotesWithFolder(int folderId);
+
+
     @Insert
     void insertAll(Note... notes);
 

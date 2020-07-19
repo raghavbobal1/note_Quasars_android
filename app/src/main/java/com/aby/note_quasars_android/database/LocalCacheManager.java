@@ -48,6 +48,21 @@ public class LocalCacheManager {
                     });
     }
 
+    public void getNotesInFolder(final MainViewInterface mainViewInterface, int folderId) {
+        db.noteDao()
+                .getNotesWithFolder(folderId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Note>>() {
+                    @Override
+                    public void accept(List<Note> notes) throws Exception {
+                        mainViewInterface.onNotesLoaded(notes);
+                    }
+                });
+    }
+
+
+
     public void addNotes(final AddNoteViewInterface addNoteViewInterface, final String title, final String note_text) {
         Completable.fromAction(new Action() {
             @Override
