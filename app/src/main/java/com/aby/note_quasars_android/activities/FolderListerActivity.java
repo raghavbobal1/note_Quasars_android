@@ -34,6 +34,7 @@ import static androidx.core.view.ViewCompat.getTransitionName;
 public class FolderListerActivity extends AppCompatActivity implements FolderListerInterface {
 
 
+    final String FOLDER_OBJ_NAME = "folderObj";
     @BindView(R.id.rvFolders)
     RecyclerView rvFolders;
 
@@ -125,8 +126,8 @@ public class FolderListerActivity extends AppCompatActivity implements FolderLis
                 @Override
                 public void onItemClick(Folder folder, View view) {
                     Intent intent = new Intent(FolderListerActivity.this,MainActivity.class);
-//                    intent.putExtra(NOTE_OBJECT_NAME,note);
-//                    intent.putExtra("transition_name", getTransitionName(view));
+                    intent.putExtra(FOLDER_OBJ_NAME,folder);
+                    intent.putExtra("transition_name", getTransitionName(view));
 
                     ActivityOptionsCompat options;
                     options = ActivityOptionsCompat.makeSceneTransitionAnimation(
