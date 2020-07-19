@@ -7,22 +7,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aby.note_quasars_android.R;
+import com.aby.note_quasars_android.database.Folder;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
+import com.aby.note_quasars_android.interfaces.FolderListerInterface;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditableDetailViewActivity extends AppCompatActivity implements EditNoteViewInterface {
+public class EditableDetailViewActivity extends AppCompatActivity implements EditNoteViewInterface, FolderListerInterface, AdapterView.OnItemSelectedListener {
 
     private String NOTE_OBJECT_NAME = "NoteOBJECT";
     private Menu menu;
+
+    List<Folder> folders;
 
     private boolean isEditMode = false;
     Note note;
@@ -32,6 +43,9 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
     @BindView(R.id.tvNoteCreatedOnDetail)
     TextView tvNoteCreatedOnDetail;
+
+    @BindView(R.id.folders_spinner)
+    Spinner folderSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +70,11 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
             tvNoteCreatedOnDetail.setText(note.getCreatedOn().toString());
         }
+
+        LocalCacheManager.getInstance(this)
+                .getFolders(this);
+
+
 
     }
 
@@ -118,6 +137,51 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
     @Override
     public void onNoteUpdated() {
         Toast.makeText(this,"Note Updated",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onFoldersLoaded(List<Folder> folders) {
+
+        this.folders =  folders;
+        ArrayList<String> folderNames = new ArrayList<>();
+        int currentFolderPosition = 0;
+        int counter = 0;
+        for(Folder folder: folders){
+            folderNames.add(folder.getName());
+            if(folder.getId() == this.note.getParentFolder()){
+                currentFolderPosition =  counter;
+            }
+            counter ++;
+        }
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+                R.layout.support_simple_spinner_dropdown_item,folderNames);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+        folderSpinner.setAdapter(arrayAdapter);
+        folderSpinner.setOnItemSelectedListener(this);
+        folderSpinner.setSelection(currentFolderPosition);
+    }
+
+    @Override
+    public void onFolderAdded() {
+
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String folderName = adapterView.getItemAtPosition(i).toString();
+        System.out.println(folderName);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

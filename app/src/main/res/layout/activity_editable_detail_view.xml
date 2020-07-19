@@ -37,5 +37,14 @@
 
         />
 
+      <Spinner
+        android:id="@+id/folders_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+          app:layout_constraintTop_toBottomOf="@+id/tvNoteCreatedOnDetail"
+          app:layout_constraintStart_toStartOf="parent"
+
+          />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
