@@ -69,6 +69,9 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
             tvNoteTitleDetail.setBackground(null);
 
             tvNoteCreatedOnDetail.setText(note.getCreatedOn().toString());
+
+            this.folderSpinner.setEnabled(false);
+
         }
 
         LocalCacheManager.getInstance(this)
@@ -99,6 +102,18 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
             // save to database here
             note.setTitle(tvNoteTitleDetail.getText().toString());
+
+
+            // set the id  of selected folder
+            String folderName = folderSpinner.getSelectedItem().toString();
+            int folderId = 0;
+            for(Folder folder:  this.folders){
+                if(folder.getName().equals(folderName)){
+                    folderId = folder.getId();
+                }
+            }
+            note.setParentFolder(folderId);
+
             LocalCacheManager.getInstance(this).updateNote(this,note);
 
 
@@ -110,7 +125,11 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
 
     private void setupForEdit(){
+
+        // enable views
         tvNoteTitleDetail.setEnabled(true);
+        this.folderSpinner.setEnabled(true);
+
         isEditMode = true;
 
         MenuItem editSaveItem = menu.findItem(R.id.edit_note);
@@ -124,7 +143,10 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
 
     private void setupForDetail(){
+
+        // disable views edit permission
         tvNoteTitleDetail.setEnabled(false);
+        this.folderSpinner.setEnabled(false);
         isEditMode = false;
         // change menu icon back to edit
         MenuItem editSaveItem = menu.findItem(R.id.edit_note);
