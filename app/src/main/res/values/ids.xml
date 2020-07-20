@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="etTitle" type="id"/>
+    <item name="etNote" type="id"/>
+    <item name="my_time_picker_1" type="id"/>
+</resources>

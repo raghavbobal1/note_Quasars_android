@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.aby.note_quasars_android.database.Folder;
@@ -15,6 +16,7 @@ import com.aby.note_quasars_android.interfaces.AddNoteViewInterface;
 import com.aby.note_quasars_android.R;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -25,15 +27,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -42,20 +47,25 @@ import butterknife.ButterKnife;
 public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInterface {
 
 
-    @BindView(R.id.etTitle)
     EditText etTitle;
 
-    @BindView(R.id.etNote)
-    EditText etNote;
-
-    @BindView(R.id.imageView1)
-    ImageView imageView1;
 
     File photoFile;
     Folder folder;
 
     static final int REQUEST_TAKE_PHOTO = 1;
     String currentPhotoPath;
+
+
+    @BindView(R.id.containerLinearLayout)
+    LinearLayout containerLinearLayout;
+
+    // variables for layout
+    ArrayList<String> texts;
+    ArrayList<String> viewOrder;
+    ArrayList<String> imageURIs;
+    ArrayList<String> soundURIs;
+
 
 
     @Override
@@ -69,14 +79,99 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
         folder = (Folder) getIntent().getSerializableExtra(FolderListerActivity.FOLDER_OBJ_NAME);
 
+        setUpViews();
     }
 
 
 
+    private EditText getPreparedEditText(){
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        EditText editText = new EditText(this);
+        editText.setLayoutParams(layoutParams);
+        editText.setBackground(null);
+        return editText;
+    }
+
+    private void setUpViews(){
+
+        // Common layout params
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        // Title edit text
+        etTitle = getPreparedEditText();
+        etTitle.setHint("Title");
+        etTitle.setId(R.id.etTitle);
+        etTitle.setTextSize(30.0f);
+
+        containerLinearLayout.addView(etTitle);
+
+        // first edit text for note detail
+        EditText editText1 = getPreparedEditText();
+        containerLinearLayout.addView(editText1);
+
+
+    }
+
+    private ArrayList<String> getAllTexts(){
+        ArrayList<String> texts = new ArrayList<>();
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if (v instanceof EditText) {
+                texts.add(((EditText) v).getText().toString());
+            } else {
+                // nothing
+            }
+        }
+        return  texts;
+    }
+
+
+    private ArrayList<String> getAllViewOrder(){
+        ArrayList<String> viewOrder = new ArrayList<>();
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if (v instanceof EditText) {
+                viewOrder.add("editText");
+            } else if (v instanceof ImageView) {
+                viewOrder.add("imageView");
+            }
+            else{
+                viewOrder.add("soundView");
+            }
+        }
+        return  viewOrder;
+    }
+
+    private ArrayList<String> getAllImageURIs(){
+        ArrayList<String> images = new ArrayList<>();
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if (v instanceof ImageView) {
+                images.add(v.getTag().toString());
+            }
+        }
+        return  images;
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveNote(){
 
+        // get all texts, viewOrder, all photos, all sounds
+        texts = getAllTexts();
+
+        viewOrder = getAllViewOrder();
+
+        imageURIs = getAllImageURIs();
+
+        System.out.println(texts);
+        System.out.println(viewOrder);
+        System.out.println(imageURIs);
+
         String title = etTitle.getText().toString();
-        String note_text = etNote.getText().toString();
+        String note_text = String.join(" ",texts);
 
         if(title.equals("") || note_text.equals("")){
             showToast("Please fill all the fields before saving");
@@ -91,7 +186,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
 
     private void showToast(String msg){
-        Toast.makeText(this,msg,Toast.LENGTH_SHORT);
+        Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -100,6 +195,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -108,6 +204,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
             saveNote();
         }
         else if(id == R.id.take_photo){
+
             dispatchTakePictureIntent();
         }
 
@@ -215,6 +312,36 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         }
     }
 
+    private int getCurrentChildPosition(){
+        View view = containerLinearLayout.getFocusedChild();
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if(v == view){
+                return i;
+            }
+        }
+        return containerLinearLayout.getChildCount()-1;
+    }
+
+
+    private void addImageViewAt(int position, Uri photoURI){
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ImageView imageView = new ImageView(this);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageURI(photoURI);
+        imageView.setTag(photoURI);
+        containerLinearLayout.addView(imageView,position);
+
+
+
+        // add a following editText below new imageView
+        EditText editText = getPreparedEditText();
+        containerLinearLayout.addView(editText,position+1);
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -222,8 +349,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         Uri photoURI = FileProvider.getUriForFile(this,
                 "com.aby.note_quasars_android.fileprovider",
                 photoFile);
-        System.out.println(photoURI);
-
-        imageView1.setImageURI(photoURI);
+        addImageViewAt(getCurrentChildPosition() + 1, photoURI);
     }
 }

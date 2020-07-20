@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -32,6 +33,9 @@ public class Note implements Serializable {
 
     private int parentFolder;
 
+
+    private ArrayList<String> photos;
+
     public Note(){
 
     }
@@ -42,6 +46,8 @@ public class Note implements Serializable {
         this.note = note;
         this.createdOn = new Date();
         this.parentFolder = parentFolder;
+        this.photos = new ArrayList<>();
+
     }
 
     public Note(String title,String note, int parentFolder){
@@ -49,6 +55,7 @@ public class Note implements Serializable {
         this.note = note;
         this.createdOn = new Date();
         this.parentFolder = parentFolder;
+        this.photos = new ArrayList<>();
 
     }
 
@@ -57,6 +64,16 @@ public class Note implements Serializable {
         this.note = note;
         this.createdOn = new Date();
         this.parentFolder = 1;
+        this.photos = new ArrayList<>();
+
+    }
+
+    public Note(String title,String note, ArrayList<String> photos){
+        this.title = title;
+        this.note = note;
+        this.createdOn = new Date();
+        this.parentFolder = 1;
+        this.photos = photos;
 
     }
 
@@ -99,5 +116,13 @@ public class Note implements Serializable {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public ArrayList<String> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
     }
 }
