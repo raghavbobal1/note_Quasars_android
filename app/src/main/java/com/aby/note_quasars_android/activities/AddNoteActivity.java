@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.aby.note_quasars_android.Utils.UIHelper;
 import com.aby.note_quasars_android.database.Folder;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.database.Note;
@@ -83,16 +84,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     }
 
 
-
-    private EditText getPreparedEditText(){
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        EditText editText = new EditText(this);
-        editText.setLayoutParams(layoutParams);
-        editText.setBackground(null);
-        return editText;
-    }
-
     private void setUpViews(){
 
         // Common layout params
@@ -100,7 +91,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         // Title edit text
-        etTitle = getPreparedEditText();
+        etTitle =  UIHelper.getPreparedEditText(this);
         etTitle.setHint("Title");
         etTitle.setId(R.id.etTitle);
         etTitle.setTextSize(30.0f);
@@ -108,7 +99,10 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         containerLinearLayout.addView(etTitle);
 
         // first edit text for note detail
-        EditText editText1 = getPreparedEditText();
+//        EditText editText1 = getPreparedEditText();
+
+         EditText editText1 = UIHelper.getPreparedEditText(this);
+
         containerLinearLayout.addView(editText1);
 
 
@@ -306,20 +300,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     }
 
 
-    public String getRealPathFromURI(Context context, Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
 
     private int getCurrentChildPosition(){
         View view = containerLinearLayout.getFocusedChild();
@@ -333,23 +313,6 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
     }
 
 
-    private void addImageViewAt(int position, Uri photoURI){
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        ImageView imageView = new ImageView(this);
-        imageView.setLayoutParams(layoutParams);
-        imageView.setImageURI(photoURI);
-        imageView.setTag(photoURI);
-        containerLinearLayout.addView(imageView,position);
-
-
-
-        // add a following editText below new imageView
-        EditText editText = getPreparedEditText();
-        containerLinearLayout.addView(editText,position+1);
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -358,6 +321,9 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         Uri photoURI = FileProvider.getUriForFile(this,
                 "com.aby.note_quasars_android.fileprovider",
                 photoFile);
-        addImageViewAt(getCurrentChildPosition() + 1, photoURI);
+//        addImageViewAt(getCurrentChildPosition() + 1, photoURI);
+
+        UIHelper.addImageViewAt(getCurrentChildPosition()+1,photoURI,containerLinearLayout,this);
+
     }
 }
