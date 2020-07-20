@@ -1,10 +1,12 @@
 package com.aby.note_quasars_android.activities;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,7 +93,7 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
             int textPosition= 1, imagePosition= 0,  soundPosition= 0;
             int currentChildPosition = 3;
-            for(String viewType: viewOrder.subList(1,viewOrder.size()-1)){
+            for(String viewType: viewOrder.subList(1,viewOrder.size())){
                 if(viewType.equals("editText")){
                     EditText newEditText = UIHelper.getPreparedEditText(this);
                     newEditText.setEnabled(false);
@@ -128,6 +130,7 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -139,7 +142,7 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
             setupForDetail();
 
             // save to database here
-            note.setTitle(tvNoteTitleDetail.getText().toString());
+            String title = tvNoteTitleDetail.getText().toString();
 
 
             // set the id  of selected folder
@@ -152,6 +155,24 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
             }
             note.setParentFolder(folderId);
 
+            // set all other texts
+
+
+            ArrayList<String> texts = UIHelper.getAllTexts(containerLinearLayout);
+            String note_text = String.join(" ",texts);
+
+
+            ArrayList<String> viewOrder = UIHelper.getAllViewOrder(containerLinearLayout);
+            viewOrder.remove(1);// remove createdOn
+            viewOrder.remove(1); //  remove  folder
+
+            ArrayList<String> imageURIs = UIHelper.getAllImageURIs(containerLinearLayout);
+
+
+            ArrayList<String> soundURIs = UIHelper.getAllSoundURIs(containerLinearLayout);
+
+            Note note = new Note(title,note_text, folderId,imageURIs,texts,viewOrder,soundURIs);
+            note.setId(this.note.getId());
             LocalCacheManager.getInstance(this).updateNote(this,note);
 
 
@@ -167,6 +188,13 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
         // enable views
         tvNoteTitleDetail.setEnabled(true);
         this.folderSpinner.setEnabled(true);
+
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if (v instanceof EditText) {
+                v.setEnabled(true);
+            }
+        }
 
         isEditMode = true;
 
@@ -185,6 +213,14 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
         // disable views edit permission
         tvNoteTitleDetail.setEnabled(false);
         this.folderSpinner.setEnabled(false);
+
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if (v instanceof EditText) {
+                v.setEnabled(false);
+            }
+        }
+
         isEditMode = false;
         // change menu icon back to edit
         MenuItem editSaveItem = menu.findItem(R.id.edit_note);

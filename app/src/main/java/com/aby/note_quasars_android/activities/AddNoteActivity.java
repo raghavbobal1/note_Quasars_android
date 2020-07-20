@@ -108,70 +108,23 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
     }
 
-    private ArrayList<String> getAllTexts(){
-        ArrayList<String> texts = new ArrayList<>();
-        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
-            View v = containerLinearLayout.getChildAt(i);
-            if (v instanceof EditText) {
-                texts.add(((EditText) v).getText().toString());
-            } else {
-                // nothing
-            }
-        }
-        return  texts;
-    }
 
 
-    private ArrayList<String> getAllViewOrder(){
-        ArrayList<String> viewOrder = new ArrayList<>();
-        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
-            View v = containerLinearLayout.getChildAt(i);
-            if (v instanceof EditText) {
-                viewOrder.add("editText");
-            } else if (v instanceof ImageView) {
-                viewOrder.add("imageView");
-            }
-            else{
-                viewOrder.add("soundView");
-            }
-        }
-        return  viewOrder;
-    }
 
-    private ArrayList<String> getAllImageURIs(){
-        ArrayList<String> images = new ArrayList<>();
-        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
-            View v = containerLinearLayout.getChildAt(i);
-            if (v instanceof ImageView) {
-                images.add(v.getTag().toString());
-            }
-        }
-        return  images;
-    }
 
-    private ArrayList<String> getAllSoundURIs(){
-        ArrayList<String> sounds = new ArrayList<>();
-//        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
-//            View v = containerLinearLayout.getChildAt(i);
-//            if (v instanceof ImageView) {
-//                images.add(v.getTag().toString());
-//            }
-//        }
-        return  sounds;
-    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveNote(){
 
         // get all texts, viewOrder, all photos, all sounds
-        texts = getAllTexts();
+        texts = UIHelper.getAllTexts(containerLinearLayout);
 
-        viewOrder = getAllViewOrder();
+        viewOrder = UIHelper.getAllViewOrder(containerLinearLayout);
 
-        imageURIs = getAllImageURIs();
+        imageURIs = UIHelper.getAllImageURIs(containerLinearLayout);
 
-        soundURIs = getAllSoundURIs();
+        soundURIs = UIHelper.getAllSoundURIs(containerLinearLayout);
 
         String title = etTitle.getText().toString();
         String note_text = String.join(" ",texts);
