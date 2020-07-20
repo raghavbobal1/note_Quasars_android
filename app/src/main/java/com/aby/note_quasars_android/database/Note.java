@@ -35,6 +35,9 @@ public class Note implements Serializable {
 
 
     private ArrayList<String> photos;
+    private ArrayList<String> texts;
+    private ArrayList<String> viewOrders;
+    private ArrayList<String> sounds;
 
     public Note(){
 
@@ -56,6 +59,10 @@ public class Note implements Serializable {
         this.createdOn = new Date();
         this.parentFolder = parentFolder;
         this.photos = new ArrayList<>();
+        this.texts = new ArrayList<>();
+        this.viewOrders = new ArrayList<>();
+        this.sounds = new ArrayList<>();
+
 
     }
 
@@ -65,15 +72,23 @@ public class Note implements Serializable {
         this.createdOn = new Date();
         this.parentFolder = 1;
         this.photos = new ArrayList<>();
+        this.texts = new ArrayList<>();
+        this.viewOrders = new ArrayList<>();
+        this.sounds = new ArrayList<>();
 
     }
 
-    public Note(String title,String note, ArrayList<String> photos){
+    public Note(String title,String note,int parentFolder,  ArrayList<String> photos, ArrayList<String> texts,
+                ArrayList<String> viewOrders,ArrayList<String> sounds){
         this.title = title;
         this.note = note;
         this.createdOn = new Date();
-        this.parentFolder = 1;
+        this.parentFolder = parentFolder;
         this.photos = photos;
+        this.texts = texts;
+        this.viewOrders = viewOrders;
+        this.sounds = sounds;
+
 
     }
 
@@ -124,5 +139,29 @@ public class Note implements Serializable {
 
     public void setPhotos(ArrayList<String> photos) {
         this.photos = photos;
+    }
+
+    public ArrayList<String> getTexts() {
+        return texts;
+    }
+
+    public ArrayList<String> getViewOrders() {
+        return viewOrders;
+    }
+
+    public ArrayList<String> getSounds() {
+        return sounds;
+    }
+
+    public void setTexts(ArrayList<String> texts) {
+        this.texts = texts;
+    }
+
+    public void setViewOrders(ArrayList<String> viewOrders) {
+        this.viewOrders = viewOrders;
+    }
+
+    public void setSounds(ArrayList<String> sounds) {
+        this.sounds = sounds;
     }
 }

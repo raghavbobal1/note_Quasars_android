@@ -155,6 +155,17 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         return  images;
     }
 
+    private ArrayList<String> getAllSoundURIs(){
+        ArrayList<String> sounds = new ArrayList<>();
+//        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+//            View v = containerLinearLayout.getChildAt(i);
+//            if (v instanceof ImageView) {
+//                images.add(v.getTag().toString());
+//            }
+//        }
+        return  sounds;
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveNote(){
@@ -166,9 +177,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
         imageURIs = getAllImageURIs();
 
-        System.out.println(texts);
-        System.out.println(viewOrder);
-        System.out.println(imageURIs);
+        soundURIs = getAllSoundURIs();
 
         String title = etTitle.getText().toString();
         String note_text = String.join(" ",texts);
@@ -178,7 +187,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
         }else
         {
             //Call Method to add note
-            Note note = new Note(title,note_text, folder.getId());
+            Note note = new Note(title,note_text, folder.getId(),imageURIs,texts,viewOrder,soundURIs);
             LocalCacheManager.getInstance(this)
                     .addNotes(this, note);
         }
