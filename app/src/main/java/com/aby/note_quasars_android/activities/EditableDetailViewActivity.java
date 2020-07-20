@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,17 +12,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aby.note_quasars_android.R;
+import com.aby.note_quasars_android.Utils.UIHelper;
 import com.aby.note_quasars_android.database.Folder;
 import com.aby.note_quasars_android.database.LocalCacheManager;
 import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 import com.aby.note_quasars_android.interfaces.FolderListerInterface;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +52,9 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
     @BindView(R.id.folders_spinner)
     Spinner folderSpinner;
 
+    @BindView(R.id.containerLinearLayout)
+    LinearLayout containerLinearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +79,36 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
             tvNoteCreatedOnDetail.setText(note.getCreatedOn().toString());
 
             this.folderSpinner.setEnabled(false);
+
+
+            // prepare all other views after the title
+            ArrayList<String> viewOrder = note.getViewOrders();
+
+            ArrayList<String> texts = note.getTexts();
+            ArrayList<String> imageURIs = note.getPhotos();
+            ArrayList<String> soundURIs = note.getSounds();
+
+
+            int textPosition= 1, imagePosition= 0,  soundPosition= 0;
+            int currentChildPosition = 3;
+            for(String viewType: viewOrder.subList(1,viewOrder.size()-1)){
+                if(viewType.equals("editText")){
+                    EditText newEditText = UIHelper.getPreparedEditText(this);
+                    newEditText.setEnabled(false);
+                    newEditText.setText(texts.get(textPosition));
+                    containerLinearLayout.addView(newEditText);
+                    textPosition ++;
+                    currentChildPosition ++;
+                }
+                else if(viewType.equals("imageView")){
+                    UIHelper.addImageViewAt(currentChildPosition,
+                            Uri.parse(imageURIs.get(imagePosition)),
+                            containerLinearLayout,this,false);
+                    currentChildPosition++;
+                    imagePosition ++;
+                }
+
+            }
 
         }
 

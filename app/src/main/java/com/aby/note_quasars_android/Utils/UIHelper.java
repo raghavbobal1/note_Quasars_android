@@ -37,4 +37,26 @@ public class UIHelper {
     }
 
 
+    public static void addImageViewAt(int position, Uri photoURI, LinearLayout containerLinearLayout, Context context,boolean isEditTextEnabled ){
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageURI(photoURI);
+        imageView.setTag(photoURI);
+        containerLinearLayout.addView(imageView,position);
+
+
+
+
+        // add a following editText below new imageView
+        EditText editText = getPreparedEditText(context);
+        if(!isEditTextEnabled){
+            editText.setEnabled(false);
+        }
+        containerLinearLayout.addView(editText,position+1);
+
+    }
+
 }
