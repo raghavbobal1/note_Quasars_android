@@ -6,45 +6,59 @@
     android:layout_height="match_parent"
     tools:context=".activities.EditableDetailViewActivity">
 
-    <EditText
-        android:id="@+id/tvNoteTitleDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:transitionName="note_title"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="Title "
-        android:textColor="#8BC34A"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvNoteCreatedOnDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="date "
-        android:textColor="#8BC34A"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/tvNoteTitleDetail"
-        app:layout_constraintStart_toStartOf="parent"
-
-        />
-
-      <Spinner
-        android:id="@+id/folders_spinner"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-          app:layout_constraintTop_toBottomOf="@+id/tvNoteCreatedOnDetail"
-          app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|left"
+            android:orientation="vertical"
+            android:id="@+id/containerLinearLayout"
+            >
 
-          />
 
+            <EditText
+                android:id="@+id/tvNoteTitleDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:transitionName="note_title"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="Title "
+                android:textColor="#8BC34A"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/tvNoteCreatedOnDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:text="date "
+                android:textColor="#8BC34A"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/tvNoteTitleDetail"
+                app:layout_constraintStart_toStartOf="parent"
+
+                />
+
+              <Spinner
+                android:id="@+id/folders_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                  app:layout_constraintTop_toBottomOf="@+id/tvNoteCreatedOnDetail"
+                  app:layout_constraintStart_toStartOf="parent"
+
+                  />
+
+        </LinearLayout>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
