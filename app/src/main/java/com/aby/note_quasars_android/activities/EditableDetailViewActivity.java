@@ -3,11 +3,14 @@ package com.aby.note_quasars_android.activities;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,8 +31,12 @@ import com.aby.note_quasars_android.database.Note;
 import com.aby.note_quasars_android.interfaces.EditNoteViewInterface;
 import com.aby.note_quasars_android.interfaces.FolderListerInterface;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,6 +48,9 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
     private Menu menu;
 
     List<Folder> folders;
+    File photoFile;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    String currentPhotoPath;
 
     private boolean isEditMode = false;
     Note note;
@@ -135,50 +145,103 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        if(id == R.id.edit_note && !isEditMode){
-            setupForEdit();
+        if(!isEditMode){
+            if(id == R.id.edit_note){
+                setupForEdit();
+
+            }
+
         }
         else{
-            setupForDetail();
 
-            // save to database here
-            String title = tvNoteTitleDetail.getText().toString();
+            if(id == R.id.edit_note){
+                setupForDetail();
+                // save to database here
+                String title = tvNoteTitleDetail.getText().toString();
 
 
-            // set the id  of selected folder
-            String folderName = folderSpinner.getSelectedItem().toString();
-            int folderId = 0;
-            for(Folder folder:  this.folders){
-                if(folder.getName().equals(folderName)){
-                    folderId = folder.getId();
+                // set the id  of selected folder
+                String folderName = folderSpinner.getSelectedItem().toString();
+                int folderId = 0;
+                for(Folder folder:  this.folders){
+                    if(folder.getName().equals(folderName)){
+                        folderId = folder.getId();
+                    }
                 }
+                note.setParentFolder(folderId);
+
+                // set all other texts
+
+
+                ArrayList<String> texts = UIHelper.getAllTexts(containerLinearLayout);
+                String note_text = String.join(" ",texts);
+
+
+                ArrayList<String> viewOrder = UIHelper.getAllViewOrder(containerLinearLayout);
+                viewOrder.remove(1);// remove createdOn
+                viewOrder.remove(1); //  remove  folder
+
+                ArrayList<String> imageURIs = UIHelper.getAllImageURIs(containerLinearLayout);
+
+
+                ArrayList<String> soundURIs = UIHelper.getAllSoundURIs(containerLinearLayout);
+
+                Note note = new Note(title,note_text, folderId,imageURIs,texts,viewOrder,soundURIs);
+                note.setId(this.note.getId());
+                LocalCacheManager.getInstance(this).updateNote(this,note);
             }
-            note.setParentFolder(folderId);
 
-            // set all other texts
+            else if(id == R.id.take_photo){
+                dispatchTakePictureIntent();
+            }
+            else{
 
-
-            ArrayList<String> texts = UIHelper.getAllTexts(containerLinearLayout);
-            String note_text = String.join(" ",texts);
-
-
-            ArrayList<String> viewOrder = UIHelper.getAllViewOrder(containerLinearLayout);
-            viewOrder.remove(1);// remove createdOn
-            viewOrder.remove(1); //  remove  folder
-
-            ArrayList<String> imageURIs = UIHelper.getAllImageURIs(containerLinearLayout);
-
-
-            ArrayList<String> soundURIs = UIHelper.getAllSoundURIs(containerLinearLayout);
-
-            Note note = new Note(title,note_text, folderId,imageURIs,texts,viewOrder,soundURIs);
-            note.setId(this.note.getId());
-            LocalCacheManager.getInstance(this).updateNote(this,note);
-
+            }
 
         }
 
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+                System.out.println(ex);
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.aby.note_quasars_android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            }
+        }
     }
 
 
@@ -278,6 +341,30 @@ public class EditableDetailViewActivity extends AppCompatActivity implements Edi
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    private int getCurrentChildPosition(){
+        View view = containerLinearLayout.getFocusedChild();
+        for (int i = 0; i < containerLinearLayout.getChildCount(); i++) {
+            View v = containerLinearLayout.getChildAt(i);
+            if(v == view){
+                return i;
+            }
+        }
+        return containerLinearLayout.getChildCount()-1;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Uri photoURI = FileProvider.getUriForFile(this,
+                "com.aby.note_quasars_android.fileprovider",
+                photoFile);
+//        addImageViewAt(getCurrentChildPosition() + 1, photoURI);
+
+        UIHelper.addImageViewAt(getCurrentChildPosition()+1,photoURI,containerLinearLayout,this);
 
     }
 }
