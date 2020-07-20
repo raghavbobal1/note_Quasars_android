@@ -268,7 +268,7 @@ public class AddNoteActivity extends AppCompatActivity implements AddNoteViewInt
 
 
 
-    
+
 
 
 
